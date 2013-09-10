@@ -4,22 +4,32 @@
 #include <asm/uaccess.h>
 #include <linux/init.h>
 
+/* Module proc file name. */
 #define CALC_PROC "calc"
 
+/* Module proc files names. */
 #define PROCFS_RESULT  "calc_result"
 #define PROCFS_FIRST   "calc_first"
 #define PROCFS_SECOND  "calc_second"
 #define	PROCFS_OPERAND "calc_operator"
 
+/* Procfs maximum buffer size. */
 #define PROCFS_MAX_SIZE 16
 
+/* Procs files names. */
 static char names[][16] = {PROCFS_FIRST, PROCFS_SECOND,
 		        PROCFS_OPERAND, PROCFS_RESULT};
 
+/* Indices fot the readers and writers. */
 static int indices[4];
+
+/* Files small chars buffers. */
 static char** procfs_buffer;
+
+/* Procfs files entries structures. */
 static struct proc_dir_entry** child_procs;
 
+/* Hooks when reading from the module proc file. */
 static int proc_read(char* buffer, char** buffer_location, off_t offset,
 		int buffer_length, int* eof, void* data)
 {
@@ -66,6 +76,7 @@ static int proc_read(char* buffer, char** buffer_location, off_t offset,
 	return ret;
 }
 
+/* Hooks when writing the data into the module proc file. */
 static int proc_write(struct file* file, const char* buffer,
 		unsigned long count, void* data)
 {
@@ -89,6 +100,7 @@ static int proc_write(struct file* file, const char* buffer,
 	return procfs_buffer_size;
 }
 
+/* Module init function */
 static int __init calc_init(void)
 {
 	int i;
@@ -121,6 +133,7 @@ static int __init calc_init(void)
 	return 0;
 }
 
+/* Module exit function */
 static void __exit calc_exit(void)
 {	
 	int i;
@@ -138,7 +151,7 @@ static void __exit calc_exit(void)
 }
 
 MODULE_LICENSE("GPL");
-MODULE_AUTHOR("A&A");
+MODULE_AUTHOR("Blue Carpet");
 
-module_init(calc_init); 
-module_exit(calc_exit); 
+module_init(calc_init); /* Register module entry point */
+module_exit(calc_exit); /* Register module cleaning up */
