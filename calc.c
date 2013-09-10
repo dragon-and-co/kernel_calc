@@ -151,7 +151,7 @@ static void __exit calc_exit(void)
 }
 
 MODULE_LICENSE("GPL");
-MODULE_AUTHOR("Blue Carpet");
+MODULE_AUTHOR("A&A");
 
 module_init(calc_init); /* Register module entry point */
 module_exit(calc_exit); /* Register module cleaning up */
