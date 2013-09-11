@@ -4,34 +4,33 @@
 #include <asm/uaccess.h>
 #include <linux/init.h>
 
-/* Module proc file name. */
+/* Module proc file name */
 #define CALC_PROC "calc"
 
-/* Module proc files names. */
+/* Module proc files names */
 #define PROCFS_RESULT  "calc_result"
 #define PROCFS_FIRST   "calc_first"
 #define PROCFS_SECOND  "calc_second"
 #define	PROCFS_OPERAND "calc_operator"
 
-/* Procfs maximum buffer size. */
+/* Procfs maximum buffer size */
 #define PROCFS_MAX_SIZE 16
 
-/* Procs files names. */
+/* Procs files names */
 static char names[][16] = {PROCFS_FIRST, PROCFS_SECOND,
 		        PROCFS_OPERAND, PROCFS_RESULT};
 
-/* Indices fot the readers and writers. */
+/* Indices fot the readers and writers */
 static int indices[4];
 
-/* Files small chars buffers. */
+/* Files small chars buffers */
 static char** procfs_buffer;
 
-/* Procfs files entries structures. */
+/* Procfs files entries structures */
 static struct proc_dir_entry** child_procs;
 
-/* Hooks when reading from the module proc file. */
-static int proc_read(char* buffer, char** buffer_location, off_t offset,
-		int buffer_length, int* eof, void* data)
+/* Hooks when reading from the module proc file */
+static int proc_read(char* buffer, char** buffer_location, off_t offset,int buffer_length, int* eof, void* data)
 {
 	int ret, number;
 	long a, b, result = 0;
@@ -46,12 +45,12 @@ static int proc_read(char* buffer, char** buffer_location, off_t offset,
 		if (number == 4) {
 			a = simple_strtol(procfs_buffer[0], &end, 10);
 			if (a == 0 && (*end == procfs_buffer[0][0])) {
-				return sprintf(buffer, "\n%s\n\n", "First operand is not integer.");
+				return sprintf(buffer, "\n%s\n\n", "First operand isn't integer.");
 			}
 
 			b = simple_strtol(procfs_buffer[1], &end, 10);
 			if (b == 0 && (*end == procfs_buffer[1][0])) {
-				return sprintf(buffer, "\n%s\n\n", "Second operand is not integer.");
+				return sprintf(buffer, "\n%s\n\n", "Second operand isn't integer.");
 			}
 			op = procfs_buffer[2][0];
 			switch (op) {
@@ -65,7 +64,7 @@ static int proc_read(char* buffer, char** buffer_location, off_t offset,
 					}
 					result = a / b;
 					break;
-				default: return sprintf(buffer, "\nUnknown operand: %c\n\n", op);
+				default: return sprintf(buffer, "\nUnexpected operand: %c\n\n", op);
 			}
 			ret = sprintf(buffer, "\n%ld %c %ld = %ld\n\n", a, op, b, result);
 		} else {
@@ -150,8 +149,9 @@ static void __exit calc_exit(void)
 	printk(KERN_INFO "Calc module is unloaded.\n");
 }
 
-MODULE_LICENSE("GPL");
 MODULE_AUTHOR("A&A");
+MODULE_LICENSE("GPL");
+
 
 module_init(calc_init); /* Register module entry point */
 module_exit(calc_exit); /* Register module cleaning up */
